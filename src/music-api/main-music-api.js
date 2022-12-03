@@ -2,8 +2,6 @@
 import music from './music1.mp3';
 import * as THREE from 'three';
 
-import { analyze } from 'web-audio-beat-detector';
-
 
 class MainMusicAPI{
     constructor(camera){
@@ -14,34 +12,71 @@ class MainMusicAPI{
         // must pass in camera from scene classes to add audio listener
         camera.add(this.listener);
 
-
         this.audioLoader = new THREE.AudioLoader();
+
+        this.fftSize = 32 ** 1;
+
+        //console.log(this.fftSize)
+
+        this.analyser = new THREE.AudioAnalyser(this.audio, this.fftSize);
 
         this.audioLoader.load(this.musicFile, (music) => {
 
-            this.analyser = new THREE.AudioAnalyser(this.audio, 32);
+            let buf = new Uint8Array(32 * 2);
 
+            // this is entire song data
+            console.log(music.getChannelData(buf))
+            
+            let data = new Uint8Array(this.analyser.analyser.frequencyBinCount);
+
+                this.analyser.analyser.minDecibels = -90;
+                this.analyser.analyser.maxDecibels = -10;
+                this.analyser.analyser.smoothingTimeConstant = .85;
 
                 this.audio.setBuffer( music );
                 this.audio.setLoop( true );
                 this.audio.setVolume( 0.5 );
+                let bassFilter = this.audio.context.createBiquadFilter();
+                bassFilter.type = 'lowpass';
+                bassFilter.frequency.value = 85;
+                bassFilter.Q.value = .1;
+                //bassFilter.gain.value = 11;
+                this.audio.setFilter(bassFilter);
+                //this.audio.connect();
+                //bassFilter.connect(this.audio.destination)
 
+                //console.log(this.audio.connect)
 
+                //this.audio.play();            
                 // needs user interaction to start playing or browser will throw an error
+                /*
                 document.addEventListener('keydown', (e) => {
 
                 // press s key to start audio
-                if(e.key == 's'){
+                if(e.key == 'p'){
                     this.audio.play();            
                 }
 
-                // all data from audio frequency
-                let data = this.analyser.getFrequencyData();
-                //let data = this.analyser.getAverageFrequency();                
-                console.log(this.getPeakAtThreshold(data, 0.8))
-        });
-    })        
+                if(e.key == 's'){
+                    this.audio.stop();            
+                }
 
+                //console.log(this.analyser.data)
+
+                // all data from audio frequency
+                //let data = this.analyser.getAverageFrequency();                
+
+        });
+        */
+
+    })       
+    
+
+    }
+
+    getFrequencyData(){
+        this.analyser.getFrequencyData();
+        //this.analyser.getAverageFrequency()
     }
 
     // working on beat detection from http://joesul.li/van/beat-detection-using-web-audio/
