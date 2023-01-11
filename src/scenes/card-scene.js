@@ -60,8 +60,8 @@ class CardScene{
 
         //this.time = this.time.getElapsedTime();
 
-        /*
-
+        
+/*
         this.time += 0.01;
 
         this.mesh.scale.x += Math.sin(this.time);
