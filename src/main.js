@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { PlaneGeometry } from 'three';
 
 import CardScene from './scenes/card-scene';
+import NewModel from './scenes/NewModel';
 
 import css from './css/style.css';
 
@@ -62,19 +63,27 @@ export default class Main
 
     this.camera.position.z = 0.01;
 
-    this.cardScene = new CardScene();
+    //this.cardScene = new CardScene();
 
     this.animate = this.animate.bind(this);
+    this.renderWhenModelLoaded = this.renderWhenModelLoaded.bind(this);
 
+    this.newModel = new NewModel(this.renderer, this.renderWhenModelLoaded);
+  }
+
+  renderWhenModelLoaded(){
     this.animate();
   }
 
   animate(){
     requestAnimationFrame( this.animate );
 
-    this.cardScene.render(this.renderer);
+    //this.cardScene.render(this.renderer);
 
-    this.material.uniforms.tex.value = this.cardScene.renderedTex;
+    //this.material.uniforms.tex.value = this.cardScene.renderedTex;
+    this.newModel.render();
+
+    this.material.uniforms.tex.value = this.newModel.renderedTexture;
 
 
     this.renderer.render( this.scene, this.camera );
