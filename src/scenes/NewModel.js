@@ -3,7 +3,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-import model from './vine-with-tentacles2.glb';
+//import model from './vine-with-tentacles2.glb';
+import model from './vine-with-tentacles-two-animations.glb';
+
+
 import tentacleVertexShader from '../shaders/tentaleVertexShader';
 import { ShaderMaterial, toHalfFloat } from 'three';
 
@@ -33,7 +36,7 @@ export default class NewModel{
         
         this.modelLoader = new GLTFLoader();
         this.modelLoader.load(model, (obj) =>{
-
+            console.log(obj)
             /*
             this.camera = obj.scene.children.filter(c => c.name === 'Camera')[0];
             //this.camera = obj.cameras[0];          
@@ -55,7 +58,11 @@ export default class NewModel{
 
             //console.log(obj)
 
-            this.animation(obj, obj.animations[0], obj.animations[1]);  
+            // animation one is the spiral attack
+            //this.animation(obj, obj.animations[0], obj.animations[1]);  
+
+            // animation 2 is the straight right attack
+            this.animation(obj, obj.animations[0], obj.animations[2]);  
 
             obj.scene.rotateX(Math.PI / 2);
 
